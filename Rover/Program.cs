@@ -11,55 +11,81 @@ namespace Rover
 
         static void Start()
         {
-            
-            string surfaceLength = ReadFromConsole();
-            var operationCenter = new OperationCenter(new Rover());
-            var surfaceCommand = CommandFactory.GetConsoleCommand(surfaceLength);
-            operationCenter.ExecuteCommand(surfaceCommand);
-
-            while (true)
+            try
             {
-                string input = ReadFromConsole();
+                string surfaceLength = ReadFromConsole();
+                var operationCenter = new OperationCenter(new Rover());
+                var surfaceCommand = CommandFactory.GetConsoleCommand(surfaceLength);
+                if (surfaceCommand is not SetSurfaceCommand)
+                {
+                    throw new FormatException();
+                }
 
-                if (string.IsNullOrEmpty(input))
-                    continue;
-
-                ExecuteConsoleCommand(input, operationCenter);
-
-                input = ReadFromConsole();
-
-                if (string.IsNullOrEmpty(input))
-                    continue;
-
-                ExecuteConsoleCommand(input, operationCenter);
-                WriteToConsole(operationCenter.GetLastSpot());
-                operationCenter.SetRover(new Rover());
                 operationCenter.ExecuteCommand(surfaceCommand);
+
+                while (true)
+                {
+                    try
+                    {
+                        string input = ReadFromConsole();
+
+                        if (string.IsNullOrEmpty(input))
+                            continue;
+
+                        ExecuteConsoleCommand(input, operationCenter);
+
+                        input = ReadFromConsole();
+
+                        if (string.IsNullOrEmpty(input))
+                            continue;
+
+                        ExecuteConsoleCommand(input, operationCenter);
+                        WriteToConsole(operationCenter.GetLastSpot());
+                        
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("The input string was not in correct format. Please try again.");
+                        continue;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("An error occured. Please try again.");
+                        continue;
+                    }
+                    finally
+                    {
+                        operationCenter.SetRover(new Rover());
+                        operationCenter.ExecuteCommand(surfaceCommand);
+                    }
+                }
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("The input string was not in correct format. Please try again.");
+            }
+            catch
+            {
+                Console.WriteLine("An error occured. Please try again.");
+            }
+            finally
+            {
+                Start();
             }
         }
 
         static void ExecuteConsoleCommand(string input, OperationCenter operationCenter)
         {
+            try
+            {
+                var command = CommandFactory.GetConsoleCommand(input);
+                operationCenter.ExecuteCommand(command);
+            }
+            catch
+            {
+                throw;
+            }
 
-            var command = CommandFactory.GetConsoleCommand(input);
-            operationCenter.ExecuteCommand(command);
-            //if (command.Contains(' '))
-            //{
-            //    var commandArr = command.Split(' ');
-            //    if (commandArr.Length == 2)
-            //    {
-            //        operationCenter.SetSurface(commandArr);
-            //    }
-            //    else if (commandArr.Length == 3)
-            //    {
-            //        operationCenter.SetStartingPoint(commandArr);
-            //    }
-            //}
-            //else
-            //{
-            //    var commandArr = command.ToCharArray();
-            //    operationCenter.SendCommand(commandArr);
-            //}
         }
 
         static void WriteToConsole(string output)

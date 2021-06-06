@@ -1,44 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Rover
-{
-    public enum Command
-    {
-        L,
-        R,
-        M
-    }
-
+﻿namespace Rover
+{ 
     public class OperationCenter
     {
-        private IRover rover;
-        public OperationCenter()
-        {
-        }
+        private IRover _rover;
+        public OperationCenter() {}
         public OperationCenter(IRover rover)
         {
-            this.rover = rover;
+            _rover = rover;
         }
 
         public void SetRover(IRover rover)
         {
-            this.rover = rover;
+            _rover = rover;
         }
 
-        public void ExecuteCommand(ConsoleCommand command)
+        public void ExecuteCommand(IConsoleCommand command)
         {
-            command.Execute(rover);
+            command.Execute(_rover);
         }
 
         public string GetLastSpot()
         {
-            return this.rover.ToString();
+            return _rover.ToString();
         }
-
-
     }
 }
