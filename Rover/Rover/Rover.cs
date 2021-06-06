@@ -10,7 +10,7 @@ namespace Rover
         public Direction Direction { get; private set; }
         public int CurrentPointX { get; set; }
         public int CurrentPointY { get; set; }
-        private RoverState _roverState;
+        public RoverState RoverState { get; set; }
         
         public Rover() {}
         public Rover(Surface surface)
@@ -25,7 +25,7 @@ namespace Rover
 
         public void SetState(RoverState state)
         {
-            _roverState = state;
+            RoverState = state;
         }
 
         public void SetPointAndDirection(int x, int y, string direction)
@@ -34,16 +34,16 @@ namespace Rover
             switch (Direction)
             {
                 case Direction.N:
-                    _roverState = new NorthState(this);
+                    RoverState = new NorthState(this);
                     break;
                 case Direction.W:
-                    _roverState = new WestState(this);
+                    RoverState = new WestState(this);
                     break;
                 case Direction.S:
-                    _roverState = new SouthState(this);
+                    RoverState = new SouthState(this);
                     break;
                 case Direction.E:
-                    _roverState = new EastState(this);
+                    RoverState = new EastState(this);
                     break;
             }
 
@@ -63,17 +63,17 @@ namespace Rover
 
         public void MoveForward()
         {
-            this._roverState.MoveForward();
+            this.RoverState.MoveForward();
         }
 
         public void MoveLeft()
         {
-            this._roverState.MoveLeft();
+            this.RoverState.MoveLeft();
         }
 
         public void MoveRight()
         {
-            this._roverState.MoveRight();
+            this.RoverState.MoveRight();
         }
     }
 }
